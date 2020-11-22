@@ -5,7 +5,8 @@ import datetime as dt
 DATE_FORMAT = '%d.%m.%Y'
 CURRENT_TRADE = {
     "eur": 90,
-    "usd": 80
+    "usd": 80,
+    "rub": 1
 }
 
 
@@ -57,14 +58,9 @@ class cashCalculator(Calculator):
 
 
     def get_today_cash_remained(self, currency):
-        if currency == "eur":
-
-            pass
-        elif currency == "usd":
-            pass
-        elif currency == "rub":
-            pass
-        else:
+        rubbls_remaiund = super().remaind()
+        result = rubbls_remaiund/CURRENT_TRADE[currency]
+        if currency not in CURRENT_TRADE:
             print(f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается")
 
 
