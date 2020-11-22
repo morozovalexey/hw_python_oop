@@ -71,7 +71,7 @@ class cashCalculator(Calculator):
 class callaoryCalculator(Calculator):
     def __int__(self):
 
-
+    #hello to everyone!
     pass
 
 class Record:
