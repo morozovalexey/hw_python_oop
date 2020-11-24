@@ -61,16 +61,37 @@ class cashCalculator(Calculator):
                                                           CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
-
-        pass
+        end_day = day_today()
+        start_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date() - dt.timedelta(days=7)
+        stat_day = dt.datetime.strftime(start_day_date, DATE_FORMAT)
+        result = super().stats(stat_day, end_day)
+        return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
 
 
 class callaoryCalculator(Calculator):
-    def __int__(self):
+    def __int__(self, day_limit):
         super().__init__()
         self.day_limit = day_limit
 
-    def 
+    def add_record(self, record):
+        super().add_record(record)
+        print("--- Вы покушали ---")
+        print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
+
+    def get_calories_remained(self):
+        result = super().remained(self.day_limit)
+        if result > 0:
+            return 'Сегодня можно съесть что-нибудь ещё, но'\
+                   ' с общей калорийностью не более {} кКал'.format(result)
+        else:
+            return "Хватит есть!"
+
+    def get_week_stats(self):
+        end_day = day_today()
+        start_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date() - dt.timedelta(days=7)
+        stat_day = dt.datetime.strftime(start_day_date, DATE_FORMAT)
+        result = super().stats(stat_day, end_day)
+        return "За последние 7 дней вы получили {} каллорий".format(result)
 
 
 class Record:
@@ -90,10 +111,24 @@ def day_today():
 
 
 # Code for testing
+print("Проверяем деньги")
 money_make = cashCalculator(50000)
-r1 = Record(12000,comment="на телефон")
+r1 = Record(12000, comment="на телефон")
 r2 = Record(20000)
 
 money_make.add_record(r1)
 money_make.add_record(r2)
 print(money_make.get_today_cash_remained())
+print(money_make.get_week_stats())
+
+print()
+print()
+print("Проверяем еду")
+food_cal = callaoryCalculator(3000)
+r_1 = Record(1200, comment="скушал")
+r_2 = Record(1000)
+
+food_cal.add_record(r1)
+food_cal.add_record(r2)
+print(food_cal.get_calories_remained())
+print(food_cal.get_week_stats())
