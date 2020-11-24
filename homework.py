@@ -69,14 +69,14 @@ class cashCalculator(Calculator):
 
 
 class callaoryCalculator(Calculator):
-    def __int__(self, day_limit):
+    def __init__(self, day_limit):
         super().__init__()
         self.day_limit = day_limit
 
     def add_record(self, record):
         super().add_record(record)
         print("--- Вы покушали ---")
-        print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
+        print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
 
     def get_calories_remained(self):
         result = super().remained(self.day_limit)
