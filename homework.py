@@ -22,7 +22,6 @@ class Calculator:
         print(spent)
         return day_limit - spent
 
-    #
     def stats(self, start_day, end_day):
         start_day_date = dt.datetime.strptime(start_day, DATE_FORMAT).date()
         end_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date()
@@ -35,7 +34,7 @@ class Calculator:
         return result
 
 
-class cashCalculator(Calculator):
+class CashCalculator(Calculator):
     def __init__(self, day_limit):
         super().__init__()
         self.day_limit = day_limit
@@ -68,7 +67,7 @@ class cashCalculator(Calculator):
         return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
 
 
-class callaoryCalculator(Calculator):
+class CaloriesCalculator(Calculator):
     def __init__(self, day_limit):
         super().__init__()
         self.day_limit = day_limit
@@ -87,8 +86,9 @@ class callaoryCalculator(Calculator):
             return "Хватит есть!"
 
     def get_week_stats(self):
-        end_day = day_today()
-        start_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date() - dt.timedelta(days=7)
+        end_day_date = day_today()
+        start_day_date = end_day - dt.timedelta(days=7)
+        end_day = dt.datetime.strftime(end_day_date, DATE_FORMAT)
         stat_day = dt.datetime.strftime(start_day_date, DATE_FORMAT)
         result = super().stats(stat_day, end_day)
         return "За последние 7 дней вы получили {} каллорий".format(result)
@@ -105,14 +105,14 @@ class Record:
 
 
 def day_today():
-    moment = dt.datetime.now()
-    date = dt.datetime.strftime(moment, DATE_FORMAT)
+    date = dt.datetime.now().date()
+    #date = dt.datetime.strptime(moment, DATE_FORMAT)
     return date
 
 
 # Code for testing
 print("Проверяем деньги")
-money_make = cashCalculator(50000)
+money_make = CashCalculator(50000)
 r1 = Record(12000, comment="на телефон")
 r2 = Record(20000)
 
@@ -124,7 +124,7 @@ print(money_make.get_week_stats())
 print()
 print()
 print("Проверяем еду")
-food_cal = callaoryCalculator(3000)
+food_cal = CaloriesCalculator(3000)
 r_1 = Record(1200, comment="скушал")
 r_2 = Record(1000)
 
