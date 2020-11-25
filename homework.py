@@ -8,55 +8,44 @@ CURRENT_TRADE = {
 
 
 class Calculator:
-    def __init__(self, day_limit=0):
+    def __init__(self, limit=0):
         self.records = []
-        self.limit = day_limit
+        self.limit = limit
 
     def add_record(self, record_name):
         self.records.append(record_name)
 
     def remained(self, day_limit):
-        today = dt.datetime.now().date()
-        spent = self.get_stats(today, today)
-        print(spent)
+        spent = self.get_stats()
         return day_limit - spent
 
-    def get_stats(self, start_day, end_day):
+    def get_stats(self, start_day=dt.datetime.now().date(), end_day=dt.datetime.now().date()):
         result = 0
         for record in self.records:
-            if ((start_day >= end_day)
-                    and (start_day <= end_day)):
+            if ((record.date >= start_day)
+                    and (record.date <= end_day)):
                 result = result + record.amount
         return result
 
     def get_today_stats(self):
-        today = dt.datetime.now().date()
-        print(today)
-        result = self.get_stats(today, today)
+        result = self.get_stats()
         return result
 
     def get_week_stats(self):
-        end_day = dt.datetime.now().date()
-        start_day = end_day - dt.timedelta(days=7)
-        result = self.get_stats(start_day, end_day)
-        print(f'день начала {start_day} день конца {start_day}')
+        start_day = dt.datetime.now().date() - dt.timedelta(days=7)
+        result = self.get_stats(start_day=start_day)
         return result
 
 
 class CashCalculator(Calculator):
-    EURO_RATE = [90, "Euro"]
-    USD_RATE = [70, "USD"]
+    EURO_RATE = 89
+    USD_RATE = 75
 
     CURRENT_TRADE = {
-        "eur": EURO_RATE,
-        "usd": USD_RATE,
+        "eur": [EURO_RATE, "Euro"],
+        "usd": [USD_RATE, "USD"],
         "rub": [1, "руб"]
     }
-
-    def __init__(self, day_limit):
-        super().__init__()
-        self.day_limit = day_limit
-
 
     def add_record(self, record):
         super().add_record(record)
@@ -65,7 +54,7 @@ class CashCalculator(Calculator):
         pass
 
     def get_today_cash_remained(self, currency='rub'):
-        rub_remained = super().remained(self.day_limit)
+        rub_remained = super().remained(self.limit)
         result = rub_remained / CURRENT_TRADE[currency][0]
         if currency not in CURRENT_TRADE:
             return f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается"
@@ -88,9 +77,6 @@ class CashCalculator(Calculator):
 
 
 class CaloriesCalculator(Calculator):
-    def __init__(self, day_limit):
-        super().__init__()
-        self.day_limit = day_limit
 
     def add_record(self, record):
         super().add_record(record)
@@ -98,7 +84,7 @@ class CaloriesCalculator(Calculator):
         print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
 
     def get_calories_remained(self):
-        result = super().remained(self.day_limit)
+        result = super().remained(self.limit)
         if result > 0:
             return 'Сегодня можно съесть что-нибудь ещё, но'\
                    ' с общей калорийностью не более {} кКал'.format(result)
