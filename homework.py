@@ -23,13 +23,11 @@ class Calculator:
         return day_limit - spent
 
     def stats(self, start_day, end_day):
-        start_day_date = dt.datetime.strptime(start_day, DATE_FORMAT).date()
-        end_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date()
         result = 0
         for record in self.records:
             print([record.amount, record.date, record.comment])
-            if ((dt.datetime.strptime(record.date, DATE_FORMAT).date() >= start_day_date)
-                    and (dt.datetime.strptime(record.date, DATE_FORMAT).date() <= end_day_date)):
+            if ((start_day >= end_day)
+                    and (start_day <= end_day)):
                 result = result + record.amount
         return result
 
@@ -61,9 +59,8 @@ class CashCalculator(Calculator):
 
     def get_week_stats(self):
         end_day = day_today()
-        start_day_date = dt.datetime.strptime(end_day, DATE_FORMAT).date() - dt.timedelta(days=7)
-        stat_day = dt.datetime.strftime(start_day_date, DATE_FORMAT)
-        result = super().stats(stat_day, end_day)
+        start_day = end_day - dt.timedelta(days=7)
+        result = super().stats(start_day, end_day)
         return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
 
 
@@ -86,11 +83,9 @@ class CaloriesCalculator(Calculator):
             return "Хватит есть!"
 
     def get_week_stats(self):
-        end_day_date = day_today()
-        start_day_date = end_day - dt.timedelta(days=7)
-        end_day = dt.datetime.strftime(end_day_date, DATE_FORMAT)
-        stat_day = dt.datetime.strftime(start_day_date, DATE_FORMAT)
-        result = super().stats(stat_day, end_day)
+        end_day = day_today()
+        start_day = end_day - dt.timedelta(days=7)
+        result = super().stats(start_day, end_day)
         return "За последние 7 дней вы получили {} каллорий".format(result)
 
 
@@ -100,13 +95,12 @@ class Record:
         if date == "":
             self.date = day_today()
         else:
-            self.date = date
+            self.date = dt.datetime.strptime(date, DATE_FORMAT)
         self.comment = comment
 
 
 def day_today():
     date = dt.datetime.now().date()
-    #date = dt.datetime.strptime(moment, DATE_FORMAT)
     return date
 
 
