@@ -33,9 +33,20 @@ class Calculator:
 
 
 class CashCalculator(Calculator):
+
+    EURO_RATE = [90, "Euro"]
+    USD_RATE = [70, "USD"]
+
+    CURRENT_TRADE = {
+        "eur": EURO_RATE,
+        "usd": USD_RATE,
+        "rub": [1, "руб"]
+    }
+
     def __init__(self, day_limit):
         super().__init__()
         self.day_limit = day_limit
+
 
     def add_record(self, record):
         super().add_record(record)
@@ -44,8 +55,8 @@ class CashCalculator(Calculator):
         pass
 
     def get_today_cash_remained(self, currency='rub'):
-        rubbls_remaiund = super().remained(self.day_limit)
-        result = rubbls_remaiund / CURRENT_TRADE[currency][0]
+        rub_remained = super().remained(self.day_limit)
+        result = rub_remained / CURRENT_TRADE[currency][0]
         if currency not in CURRENT_TRADE:
             print(f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается")
         if result > 0:
@@ -54,7 +65,7 @@ class CashCalculator(Calculator):
         elif result == 0:
             return "Денег нет, держись"
         else:
-            return 'Денег нет, держись: твой долг - {}'.format((CURRENT_TRADE[currency][0] * result),
+            return 'Денег нет, держись: твой долг - {:.2f} {}'.format((CURRENT_TRADE[currency][0] * result * (-1)),
                                                           CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
@@ -105,24 +116,24 @@ def day_today():
 
 
 # Code for testing
-print("Проверяем деньги")
-money_make = CashCalculator(50000)
-r1 = Record(12000, comment="на телефон")
-r2 = Record(20000)
+#print("Проверяем деньги")
+#money_make = CashCalculator(50000)
+#r1 = Record(12000, comment="на телефон")
+#r2 = Record(20000)
 
-money_make.add_record(r1)
-money_make.add_record(r2)
-print(money_make.get_today_cash_remained())
-print(money_make.get_week_stats())
+#money_make.add_record(r1)
+#money_make.add_record(r2)
+#print(money_make.get_today_cash_remained())
+#print(money_make.get_week_stats())
 
-print()
-print()
-print("Проверяем еду")
-food_cal = CaloriesCalculator(3000)
-r_1 = Record(1200, comment="скушал")
-r_2 = Record(1000)
+#print()
+#print()
+#print("Проверяем еду")
+#food_cal = CaloriesCalculator(3000)
+#r_1 = Record(1200, comment="скушал")
+#r_2 = Record(1000)
 
-food_cal.add_record(r1)
-food_cal.add_record(r2)
-print(food_cal.get_calories_remained())
-print(food_cal.get_week_stats())
+#food_cal.add_record(r1)
+#food_cal.add_record(r2)
+#print(food_cal.get_calories_remained())
+#print(food_cal.get_week_stats())
