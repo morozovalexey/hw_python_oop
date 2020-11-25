@@ -59,7 +59,7 @@ class TestCalculator:
         for record in records:
             result.add_record(record)
         assert hasattr(result, 'get_today_stats'), msg_err('add_method', 'get_today_stats', 'Calculator')
-        assert result.get_today_stats() == today, msg_err('wrong_method', 'get_today_stats', 'Calculator')
+        assert result.get_stats() == today, msg_err('wrong_method', 'get_today_stats', 'Calculator')
 
     def test_get_week_stats(self, init_limit, data_records, msg_err):
         result = homework.Calculator(init_limit)

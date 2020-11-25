@@ -1,6 +1,5 @@
 import datetime as dt
 
-DATE_FORMAT = '%d.%m.%Y'
 CURRENT_TRADE = {
     "eur": [90, "Euro"],
     "usd": [80, "USD"],
@@ -16,13 +15,12 @@ class Calculator:
         self.records.append(record_name)
 
     def remained(self, day_limit):
-        today = day_today()
-        print(today)
-        spent = self.stats(today, today)
+        today = dt.datetime.now().date()
+        spent = self.get_stats(today, today)
         print(spent)
         return day_limit - spent
 
-    def stats(self, start_day, end_day):
+    def get_stats(self, start_day, end_day):
         result = 0
         for record in self.records:
             print([record.amount, record.date, record.comment])
@@ -33,7 +31,6 @@ class Calculator:
 
 
 class CashCalculator(Calculator):
-
     EURO_RATE = [90, "Euro"]
     USD_RATE = [70, "USD"]
 
@@ -50,18 +47,18 @@ class CashCalculator(Calculator):
 
     def add_record(self, record):
         super().add_record(record)
-        print("--- Вы внесли запись о расходе ---")
-        print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
+        #print("--- Вы внесли запись о расходе ---")
+        #print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
         pass
 
     def get_today_cash_remained(self, currency='rub'):
         rub_remained = super().remained(self.day_limit)
         result = rub_remained / CURRENT_TRADE[currency][0]
         if currency not in CURRENT_TRADE:
-            print(f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается")
+            return f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается"
         if result > 0:
-            return 'На сегодня осталось {:.2f} {}'.format((CURRENT_TRADE[currency][0] * result),
-                                                              CURRENT_TRADE[currency][1])
+            return 'На сегодня осталось {:.2f} {}'.format((self.CURRENT_TRADE[currency][0] * result),
+                                                              self.CURRENT_TRADE[currency][1])
         elif result == 0:
             return "Денег нет, держись"
         else:
@@ -69,9 +66,9 @@ class CashCalculator(Calculator):
                                                           CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
-        end_day = day_today()
+        end_day = dt.datetime.now().date()
         start_day = end_day - dt.timedelta(days=7)
-        result = super().stats(start_day, end_day)
+        result = super().get_stats(start_day, end_day)
         return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
 
 
@@ -82,8 +79,8 @@ class CaloriesCalculator(Calculator):
 
     def add_record(self, record):
         super().add_record(record)
-        print("--- Вы покушали ---")
-        print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
+        #print("--- Вы покушали ---")
+        #print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
 
     def get_calories_remained(self):
         result = super().remained(self.day_limit)
@@ -94,46 +91,25 @@ class CaloriesCalculator(Calculator):
             return "Хватит есть!"
 
     def get_week_stats(self):
-        end_day = day_today()
+        end_day = dt.datetime.now().date()
         start_day = end_day - dt.timedelta(days=7)
-        result = super().stats(start_day, end_day)
+        result = super().get_stats(start_day, end_day)
         return "За последние 7 дней вы получили {} каллорий".format(result)
 
 
 class Record:
+    DATE_FORMAT = '%d.%m.%Y'
     def __init__(self, amount, date="", comment="запись без комментария"):
         self.amount = amount
         if date == "":
-            self.date = day_today()
+            self.date = dt.datetime.now().date()
         else:
-            self.date = dt.datetime.strptime(date, DATE_FORMAT)
+            self.date = dt.datetime.strptime(date, self.DATE_FORMAT)
         self.comment = comment
+        print(self.date)
+        print(type(self.date))
 
 
-def day_today():
-    date = dt.datetime.now().date()
-    return date
 
 
-# Code for testing
-#print("Проверяем деньги")
-#money_make = CashCalculator(50000)
-#r1 = Record(12000, comment="на телефон")
-#r2 = Record(20000)
 
-#money_make.add_record(r1)
-#money_make.add_record(r2)
-#print(money_make.get_today_cash_remained())
-#print(money_make.get_week_stats())
-
-#print()
-#print()
-#print("Проверяем еду")
-#food_cal = CaloriesCalculator(3000)
-#r_1 = Record(1200, comment="скушал")
-#r_2 = Record(1000)
-
-#food_cal.add_record(r1)
-#food_cal.add_record(r2)
-#print(food_cal.get_calories_remained())
-#print(food_cal.get_week_stats())
