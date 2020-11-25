@@ -8,8 +8,9 @@ CURRENT_TRADE = {
 
 
 class Calculator:
-    def __init__(self):
+    def __init__(self, day_limit=0):
         self.records = []
+        self.limit = day_limit
 
     def add_record(self, record_name):
         self.records.append(record_name)
@@ -23,10 +24,22 @@ class Calculator:
     def get_stats(self, start_day, end_day):
         result = 0
         for record in self.records:
-            print([record.amount, record.date, record.comment])
             if ((start_day >= end_day)
                     and (start_day <= end_day)):
                 result = result + record.amount
+        return result
+
+    def get_today_stats(self):
+        today = dt.datetime.now().date()
+        print(today)
+        result = self.get_stats(today, today)
+        return result
+
+    def get_week_stats(self):
+        end_day = dt.datetime.now().date()
+        start_day = end_day - dt.timedelta(days=7)
+        result = self.get_stats(start_day, end_day)
+        print(f'день начала {start_day} день конца {start_day}')
         return result
 
 
@@ -47,8 +60,8 @@ class CashCalculator(Calculator):
 
     def add_record(self, record):
         super().add_record(record)
-        #print("--- Вы внесли запись о расходе ---")
-        #print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
+        print("--- Вы внесли запись о расходе ---")
+        print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
         pass
 
     def get_today_cash_remained(self, currency='rub'):
@@ -66,10 +79,12 @@ class CashCalculator(Calculator):
                                                           CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
-        end_day = dt.datetime.now().date()
-        start_day = end_day - dt.timedelta(days=7)
-        result = super().get_stats(start_day, end_day)
+        result = super().get_week_stats()
         return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
+
+    def get_today_stats(self):
+        result = super().get_today_stats()
+        return "За сегодня вы израсходовали {:.2f} рублей".format(result)
 
 
 class CaloriesCalculator(Calculator):
@@ -79,8 +94,8 @@ class CaloriesCalculator(Calculator):
 
     def add_record(self, record):
         super().add_record(record)
-        #print("--- Вы покушали ---")
-        #print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
+        print("--- Вы покушали ---")
+        print(f"{record.date} скушано {record.amount} кКал. Комментарий: {record.comment}")
 
     def get_calories_remained(self):
         result = super().remained(self.day_limit)
@@ -91,10 +106,12 @@ class CaloriesCalculator(Calculator):
             return "Хватит есть!"
 
     def get_week_stats(self):
-        end_day = dt.datetime.now().date()
-        start_day = end_day - dt.timedelta(days=7)
-        result = super().get_stats(start_day, end_day)
+        result = super().get_week_stats()
         return "За последние 7 дней вы получили {} каллорий".format(result)
+
+    def get_today_stats(self):
+        result = super().get_today_stats()
+        return "За сегодня вы получили {} каллорий".format(result)
 
 
 class Record:
