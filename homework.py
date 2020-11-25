@@ -38,9 +38,8 @@ class Calculator:
 
 
 class CashCalculator(Calculator):
-    EURO_RATE = 89
-    USD_RATE = 75
-
+    EURO_RATE = 70.00
+    USD_RATE = 60.00
     CURRENT_TRADE = {
         "eur": [EURO_RATE, "Euro"],
         "usd": [USD_RATE, "USD"],
@@ -55,17 +54,17 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency='rub'):
         rub_remained = super().remained(self.limit)
-        result = rub_remained / CURRENT_TRADE[currency][0]
+        result = round((rub_remained / CURRENT_TRADE[currency][0]), 2)
         if currency not in CURRENT_TRADE:
             return f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается"
         if result > 0:
-            return 'На сегодня осталось {:.2f} {}'.format((self.CURRENT_TRADE[currency][0] * result),
-                                                              self.CURRENT_TRADE[currency][1])
+            return 'На сегодня осталось {:.2f} {}'.format(result,
+                                                          CURRENT_TRADE[currency][1])
         elif result == 0:
             return "Денег нет, держись"
         else:
-            return 'Денег нет, держись: твой долг - {:.2f} {}'.format((CURRENT_TRADE[currency][0] * result * (-1)),
-                                                          CURRENT_TRADE[currency][1])
+            return 'Денег нет, держись: твой долг - {:.2f} {}'.format(result * (-1),
+                                                                      CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
         result = super().get_week_stats()
@@ -86,7 +85,7 @@ class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
         result = super().remained(self.limit)
         if result > 0:
-            return 'Сегодня можно съесть что-нибудь ещё, но'\
+            return 'Сегодня можно съесть что-нибудь ещё, но' \
                    ' с общей калорийностью не более {} кКал'.format(result)
         else:
             return "Хватит есть!"
@@ -102,6 +101,7 @@ class CaloriesCalculator(Calculator):
 
 class Record:
     DATE_FORMAT = '%d.%m.%Y'
+
     def __init__(self, amount, date="", comment="запись без комментария"):
         self.amount = amount
         if date == "":
