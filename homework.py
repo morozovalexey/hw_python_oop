@@ -104,12 +104,5 @@ class Record:
         if date == "":
             self.date = dt.datetime.now().date()
         else:
-            self.date = dt.datetime.strptime(date, self.DATE_FORMAT)
+            self.date = dt.datetime.strptime(date, self.DATE_FORMAT).date()
         self.comment = comment
-        print(self.date)
-        print(type(self.date))
-
-
-
-
-
