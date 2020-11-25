@@ -1,11 +1,5 @@
 import datetime as dt
 
-CURRENT_TRADE = {
-    "eur": [90, "Euro"],
-    "usd": [80, "USD"],
-    "rub": [1, "руб"]
-}
-
 
 class Calculator:
     def __init__(self, limit=0):
@@ -54,17 +48,17 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency='rub'):
         rub_remained = super().remained(self.limit)
-        result = round((rub_remained / CURRENT_TRADE[currency][0]), 2)
-        if currency not in CURRENT_TRADE:
+        result = round((rub_remained / self.CURRENT_TRADE[currency][0]), 2)
+        if currency not in self.CURRENT_TRADE:
             return f"К сожалению, в нашем калькуляторе валюта {currency} пока не поддерживается"
         if result > 0:
             return 'На сегодня осталось {:.2f} {}'.format(result,
-                                                          CURRENT_TRADE[currency][1])
+                                                          self.CURRENT_TRADE[currency][1])
         elif result == 0:
             return "Денег нет, держись"
         else:
             return 'Денег нет, держись: твой долг - {:.2f} {}'.format(result * (-1),
-                                                                      CURRENT_TRADE[currency][1])
+                                                                      self.CURRENT_TRADE[currency][1])
 
     def get_week_stats(self):
         result = super().get_week_stats()
