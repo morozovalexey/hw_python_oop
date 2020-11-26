@@ -58,13 +58,13 @@ class CashCalculator(Calculator):
             return (f"К сожалению, в нашем калькуляторе валюта "
                     f"{currency} пока не поддерживается")
         if result > 0:
-            return ('На сегодня осталось {:.2f} '
-                    '{}'.format(result, self.CURRENCY_RATE[currency][1]))
+            return ("На сегодня осталось {:.2f} "
+                    "{}".format(result, self.CURRENCY_RATE[currency][1]))
         elif result == 0:
             return "Денег нет, держись"
         else:
-            return ('Денег нет, держись: твой долг - {:.2f} '
-                    '{}'.format(debt, self.CURRENCY_RATE[currency][1]))
+            return ("Денег нет, держись: твой долг - {:.2f} "
+                    "{}".format(debt, self.CURRENCY_RATE[currency][1]))
 
     def get_week_stats(self):
         result = super().get_week_stats()
@@ -87,8 +87,8 @@ class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
         result = self.remained(self.limit)
         if result > 0:
-            return ('Сегодня можно съесть что-нибудь ещё, '
-                    f'но с общей калорийностью не более {result} кКал')
+            return ("Сегодня можно съесть что-нибудь ещё, "
+                    f"но с общей калорийностью не более {result} кКал")
         else:
             return "Хватит есть!"
 
@@ -102,7 +102,7 @@ class CaloriesCalculator(Calculator):
 
 
 class Record:
-    DATE_FORMAT = '%d.%m.%Y'
+    DATE_FORMAT = "%d.%m.%Y"
 
     def __init__(self, amount, date=None, comment="запись без комментария"):
         self.amount = amount
