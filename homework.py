@@ -47,7 +47,8 @@ class CashCalculator(Calculator):
     def add_record(self, record):
         super().add_record(record)
         print("--- Вы внесли запись о расходе ---")
-        print(f"{record.date} потрачено {record.amount}. Комментарий: {record.comment}")
+        print(f"{record.date} потрачено {record.amount}. "
+              f"Комментарий: {record.comment}")
 
     def get_today_cash_remained(self, currency='rub'):
         rub_remained = self.remained(self.limit)
@@ -67,7 +68,8 @@ class CashCalculator(Calculator):
 
     def get_week_stats(self):
         result = super().get_week_stats()
-        return "За последние 7 дней вы израсходовали {:.2f} рублей".format(result)
+        return ("За последние 7 дней вы израсходовали "
+                "{:.2f} рублей".format(result))
 
     def get_today_stats(self):
         result = super().get_today_stats()
