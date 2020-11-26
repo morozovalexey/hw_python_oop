@@ -20,8 +20,7 @@ class Calculator:
             end_day = dt.datetime.now().date()
         result = 0
         for record in self.records:
-            if ((record.date >= start_day)
-                    and (record.date <= end_day)):
+            if start_day <= record.date <= end_day:
                 result += record.amount
         return result
 
