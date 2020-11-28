@@ -18,7 +18,7 @@ class Calculator:
             start_day = dt.date.today()
         if end_day is None:
             end_day = dt.date.today()
-        result = sum(record.amount for record in records
+        result = sum(record.amount for record in self.records
                      if start_day <= record.date <= end_day)
         return result
 
@@ -35,7 +35,7 @@ class Calculator:
 class CashCalculator(Calculator):
     EURO_RATE = 70.00
     USD_RATE = 60.00
-    RUB_RATE  = 0.00
+    RUB_RATE  = 1.00
     CURRENCY_RATE = {
         "eur": [EURO_RATE, "Euro"],
         "usd": [USD_RATE, "USD"],
@@ -49,7 +49,7 @@ class CashCalculator(Calculator):
               f"Комментарий: {record.comment}")
 
     def get_today_cash_remained(self, currency='rub'):
-        currency_name, currency_rate = self.CURRENCY_RATE[currency]
+        currency_rate, currency_name = self.CURRENCY_RATE[currency]
         rub_remained = self.remained(self.limit)
         result = round((rub_remained / currency_rate), 2)
         debt = abs(result)
