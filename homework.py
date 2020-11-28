@@ -15,13 +15,11 @@ class Calculator:
 
     def get_stats(self, start_day=None, end_day=None):
         if start_day is None:
-            start_day = dt.datetime.now().date()
+            start_day = dt.date.today()
         if end_day is None:
-            end_day = dt.datetime.now().date()
-        result = 0
-        for record in self.records:
-            if start_day <= record.date <= end_day:
-                result += record.amount
+            end_day = dt.date.today()
+        result = sum(record.amount for record in records
+                     if start_day <= record.date <= end_day)
         return result
 
     def get_today_stats(self):
@@ -29,7 +27,7 @@ class Calculator:
         return result
 
     def get_week_stats(self):
-        start_day = dt.datetime.now().date() - dt.timedelta(days=7)
+        start_day = dt.date.today() - dt.timedelta(days=7)
         result = self.get_stats(start_day=start_day)
         return result
 
@@ -37,10 +35,11 @@ class Calculator:
 class CashCalculator(Calculator):
     EURO_RATE = 70.00
     USD_RATE = 60.00
+    RUB_RATE  = 0.00
     CURRENCY_RATE = {
         "eur": [EURO_RATE, "Euro"],
         "usd": [USD_RATE, "USD"],
-        "rub": [1, "руб"]
+        "rub": [RUB_RATE, "руб"]
     }
 
     def add_record(self, record):
@@ -50,20 +49,20 @@ class CashCalculator(Calculator):
               f"Комментарий: {record.comment}")
 
     def get_today_cash_remained(self, currency='rub'):
+        currency_name, currency_rate = self.CURRENCY_RATE[currency]
         rub_remained = self.remained(self.limit)
-        result = round((rub_remained / self.CURRENCY_RATE[currency][0]), 2)
+        result = round((rub_remained / currency_rate), 2)
         debt = abs(result)
         if currency not in self.CURRENCY_RATE:
             return (f"К сожалению, в нашем калькуляторе валюта "
                     f"{currency} пока не поддерживается")
         if result > 0:
             return ("На сегодня осталось {:.2f} "
-                    "{}".format(result, self.CURRENCY_RATE[currency][1]))
-        elif result == 0:
+                    "{}".format(result, currency_name))
+        if result == 0:
             return "Денег нет, держись"
-        else:
-            return ("Денег нет, держись: твой долг - {:.2f} "
-                    "{}".format(debt, self.CURRENCY_RATE[currency][1]))
+        return ("Денег нет, держись: твой долг - {:.2f} "
+                "{}".format(debt, currency_name))
 
     def get_week_stats(self):
         result = super().get_week_stats()
@@ -106,7 +105,7 @@ class Record:
     def __init__(self, amount, date=None, comment="запись без комментария"):
         self.amount = amount
         if date is None:
-            self.date = dt.datetime.now().date()
+            self.date = dt.date.today()
         else:
             self.date = dt.datetime.strptime(date, self.DATE_FORMAT).date()
         self.comment = comment
